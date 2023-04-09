@@ -1,6 +1,9 @@
 public class Order {
     private OrderResponse order;
 
+    public Order() {
+    }
+
     public Order(OrderResponse order) {
         this.order = order;
     }

@@ -11,6 +11,8 @@ public class OrderList {
         this.availableStations = availableStations;
     }
 
+    public OrderList() {}
+
     public List<OrderListResponse> getOrders() {
         return orders;
     }

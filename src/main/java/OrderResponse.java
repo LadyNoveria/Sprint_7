@@ -41,6 +41,9 @@ public class OrderResponse {
         this.status = status;
     }
 
+    public OrderResponse() {
+    }
+
     public int getId() {
         return id;
     }

@@ -37,8 +37,7 @@ public class OrderListResponse {
         this.status = status;
     }
 
-    public OrderListResponse() {
-    }
+    public OrderListResponse() {}
 
     public int getId() {
         return id;

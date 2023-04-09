@@ -4,12 +4,16 @@ public class OrderListFilter {
     private int limit;
     private int page;
 
-    public OrderListFilter(int courierId, String nearestStation, int limit, int page){
+    public OrderListFilter(int courierId, String nearestStation, int limit, int page) {
         this.courierId = courierId;
         this.nearestStation = nearestStation;
         this.limit = limit;
         this.page = page;
     }
+
+    public OrderListFilter() {
+    }
+
 
     public int getCourierId() {
         return courierId;

@@ -11,6 +11,8 @@ public class Courier {
         this.firstName = firstName;
     }
 
+    public Courier(){}
+
     public static Courier courierGenerator(){
         return new Courier(getRandomString(), getRandomString(), getRandomString());
     }
