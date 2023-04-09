@@ -1,24 +1,25 @@
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @RunWith(Parameterized.class)
-public class ParameterizedCourierLoginTests extends CourierProvider{
+public class ParameterizedCourierLoginTests {
     private final String login;
     private final String password;
     private final String messageError;
     private final int code;
+    private CourierClient courierClient;
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru/";
+        courierClient = new CourierClient();
     }
 
     public ParameterizedCourierLoginTests(String login, String password, String messageError, int code){
@@ -31,19 +32,19 @@ public class ParameterizedCourierLoginTests extends CourierProvider{
     @Parameterized.Parameters(name = "login: {0}, password: {1}")
     public static Object[][] getCourierData(){
         return new Object[][]{
-                {null, "theFastest", "Недостаточно данных для входа", 400},
-                {"Flash", "", "Недостаточно данных для входа", 400},
-                {null, "", "Недостаточно данных для входа", 400},
-                {"login", "theFastest", "Учетная запись не найдена", 404},
-                {"Flash", "password", "Учетная запись не найдена", 404},
-                {"ThirdFlash", "onlyTheThird", "Учетная запись не найдена", 404}
+                {null, "theFastest", "Недостаточно данных для входа", SC_BAD_REQUEST},
+                {"Flash", "", "Недостаточно данных для входа", SC_BAD_REQUEST},
+                {null, "", "Недостаточно данных для входа", SC_BAD_REQUEST},
+                {"login", "theFastest", "Учетная запись не найдена", SC_NOT_FOUND},
+                {"Flash", "password", "Учетная запись не найдена", SC_NOT_FOUND},
+                {"ThirdFlash", "onlyTheThird", "Учетная запись не найдена", SC_NOT_FOUND}
         };
     }
 
     @Test
     @DisplayName("400 Bad Request: creating couriers without required fields")
     public void badRequestCourierLoginWithoutRequiredFields(){
-        Response response = loginCourier(login, password, null);
+        Response response = courierClient.login(new CourierCreds(login, password));
         response.then().assertThat().body("message", equalTo(messageError))
                 .and().statusCode(code);
     }

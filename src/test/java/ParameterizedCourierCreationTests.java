@@ -1,18 +1,20 @@
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @RunWith(Parameterized.class)
-public class ParameterizedCourierCreationTests extends CourierProvider{
+public class ParameterizedCourierCreationTests extends CourierProvider {
 
     private final String login;
     private final String password;
+    private CourierClient courierClient;
+
     public ParameterizedCourierCreationTests(String login, String password){
         this.login = login;
         this.password = password;
@@ -20,7 +22,7 @@ public class ParameterizedCourierCreationTests extends CourierProvider{
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru/";
+        courierClient = new CourierClient();
     }
 
     @Parameterized.Parameters(name = "login: {0}, password: {1}")
@@ -35,10 +37,9 @@ public class ParameterizedCourierCreationTests extends CourierProvider{
     @Test()
     @DisplayName("400 Bad Request: creating couriers without required fields")
     public void badRequestCreatingCourierWithoutRequiredFields() {
-        Response response = createCourier(login, password, "");
-        System.out.println(response.body().asString());
+        Response response = courierClient.create(new Courier(login, password, ""));
         response.then().assertThat()
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"))
-                .and().statusCode(400);
+                .and().statusCode(SC_BAD_REQUEST);
     }
 }
