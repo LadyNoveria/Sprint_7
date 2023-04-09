@@ -1,33 +1,64 @@
-import io.restassured.RestAssured;
+import io.qameta.allure.junit4.DisplayName;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class OrderListTests extends CourierProvider {
-    //Список заказов
-    //Проверь, что в тело ответа возвращается список заказов.
+import static org.junit.Assert.assertEquals;
+
+public class OrderListTests {
+    private OrderClient orderClient;
+    private CourierClient courierClient;
+    private Courier courier;
+    private OrderRequest orderRequest;
+    private int courierId;
+    private int orderId;
     @Before
     public void setUp() {
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru/";
+        orderClient = new OrderClient();
+        courierClient = new CourierClient();
+        courier = Courier.courierGenerator();
+        orderRequest = OrderRequest.orderGenerator();
     }
-    //new OrderListFilter(courierId, null, null, null)
-    //new OrderListFilter(courierId, nearestStation, null, null)
-    //new OrderListFilter(courierId, nearestStation, limit, null)
-    //new OrderListFilter(courierId, nearestStation, limit, page)
 
-    //GET /api/v1/orders
+    @Test
+    @DisplayName("200 OK: successful get order list")
+    public void getOrderLists(){
+        Order order = getOrderByCourier();
+        OrderListFilter orderListFilter = new OrderListFilter(courierId, order.getOrder().getMetroStation(), 30,0);
+        OrderList orderList = orderClient.getOrderList(orderListFilter);
+        assertEquals(orderList.getOrders().get(0).getCourierId(), courierId);
+        assertEquals(orderList.getOrders().get(0).getMetroStation(), order.getOrder().getMetroStation());
+        assertEquals(orderList.getOrders().get(0).getFirstName(), order.getOrder().getFirstName());
+        assertEquals(orderList.getOrders().get(0).getLastName(), order.getOrder().getLastName());
+    }
 
-    //созать курьера
-    //залогиниться и получить его id
-    //создать заказы 2 штуки
-    //сохранить их track из боди
-    //найти id по трекам с помощью метода Получить заказ по его номеру GET /api/v1/orders/track с параметром t (track)
-    // GET http://qa-scooter.praktikum-services.ru/api/v1/orders/track?t=352095
-    //принять заказ PUT /api/v1/orders/accept/:id, в качестве параметров предаются courierId и id (номер заказа)
-    // PUT http://qa-scooter.praktikum-services.ru/api/v1/orders/accept/136280?courierId=178786 (id заказа?id курьера)
-    //завершить заказ PUT http://qa-scooter.praktikum-services.ru/api/v1/orders/finish/136280 (id заказа)
-    //удалить курьера
+    private Order getOrderByCourier(){
+        int orderTrack = getOrderTrack();
+        Order order = orderClient.getOrderByTrack(orderTrack);
+        getCourierId();
+        orderId = order.getOrder().getId();
+        orderClient.accept(order.getOrder().getId(), courierId);
+        return order;
+    }
 
+    private int getOrderTrack(){
+        return orderClient.create(orderRequest)
+                .then()
+                .extract()
+                .body().path("track");
+    }
 
+    private void getCourierId(){
+        courierClient.create(courier);
+        courierId = courierClient.login(CourierCreds.getCredsFrom(courier))
+                .then()
+                .extract()
+                .body().path("id");
+    }
 
-
+    @After
+    public void tearDown(){
+        courierClient.delete(courierId);
+        orderClient.finish(orderId);
+    }
 }

@@ -1,4 +1,6 @@
-public class OrderCreationDto {
+import java.util.Random;
+
+public class OrderRequest {
     private String firstName;
     //Имя заказчика, записывается в поле firstName таблицы Orders
     private String lastName;
@@ -15,11 +17,11 @@ public class OrderCreationDto {
     //Дата доставки, записывается в поле deliveryDate таблицы Orders
     private String comment;
     //Комментарий от заказчика, записывается в поле comment таблицы Orders
-    private String[] colorOptional;
+    private String[] color;
     //Предпочитаемые цвета, записываются в поле color таблицы Orders
 
-    public OrderCreationDto(String firstName, String lastName, String address, String metroStation, String phone,
-                            int rentTime, String deliveryDate, String comment, String[] colorOptional) {
+    public OrderRequest(String firstName, String lastName, String address, String metroStation, String phone,
+                        int rentTime, String deliveryDate, String comment, String[] color) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -28,10 +30,16 @@ public class OrderCreationDto {
         this.rentTime = rentTime;
         this.deliveryDate = deliveryDate;
         this.comment = comment;
-        this.colorOptional = colorOptional;
+        this.color = color;
     }
 
-    public OrderCreationDto() {}
+    public static OrderRequest orderGenerator(){
+        return new OrderRequest(getRandomString(), getRandomString(), getRandomString(),
+                String.valueOf(getRandomInteger(1, 237)), String.valueOf(getRandomInteger(123, 1111111111)),
+                getRandomInteger(1, 7), "10.07.2023", getRandomString(), null);
+    }
+
+    public OrderRequest() {}
 
     public String getFirstName() {
         return firstName;
@@ -97,11 +105,29 @@ public class OrderCreationDto {
         this.comment = comment;
     }
 
-    public String[] getColorOptional() {
-        return colorOptional;
+    public String[] getColor() {
+        return color;
     }
 
-    public void setColorOptional(String[] colorOptional) {
-        this.colorOptional = colorOptional;
+    public void setColor(String[] color) {
+        this.color = color;
+    }
+
+    private static String getRandomString(){
+        String ALPHABET = new String("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQRSTUVWXYZ".toCharArray());
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(10);
+        for (int i = 0; i < 10; i++) {
+            int rndCharAt = random.nextInt(ALPHABET.length());
+            char rndChar = ALPHABET.charAt(rndCharAt);
+            sb.append(rndChar);
+        }
+        return sb.toString();
+    }
+
+    private static int getRandomInteger(int min, int max){
+        int diff = max - min;
+        Random random = new Random();
+        return random.nextInt(diff + 1);
     }
 }

@@ -1,6 +1,6 @@
 import java.util.Date;
 
-public class Orders {
+public class OrderListResponse {
     private int id;
     private int courierId;
     private String firstName;
@@ -17,9 +17,9 @@ public class Orders {
     private Date updatedAt;
     private int status;
 
-    public Orders(int id, int courierId, String firstName, String lastName, String address, String metroStation,
-                  String phone, int rentTime, Date deliveryDate, int track, String[] color, String comment,
-                  Date createdAt, Date updatedAt, int status) {
+    public OrderListResponse(int id, int courierId, String firstName, String lastName, String address, String metroStation,
+                             String phone, int rentTime, Date deliveryDate, int track, String[] color, String comment,
+                             Date createdAt, Date updatedAt, int status) {
         this.id = id;
         this.courierId = courierId;
         this.firstName = firstName;
@@ -37,7 +37,7 @@ public class Orders {
         this.status = status;
     }
 
-    public Orders() {
+    public OrderListResponse() {
     }
 
     public int getId() {

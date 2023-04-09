@@ -25,7 +25,7 @@ public class CourierLoginTests {
     }
 
     @After
-    public void deleteData(){
+    public void tearDown(){
         courierClient.delete(courierClient.login(CourierCreds.getCredsFrom(courier))
                 .then()
                 .extract()

@@ -9,7 +9,7 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @RunWith(Parameterized.class)
-public class ParameterizedCourierCreationTests extends CourierProvider {
+public class ParameterizedCourierCreationTests {
 
     private final String login;
     private final String password;

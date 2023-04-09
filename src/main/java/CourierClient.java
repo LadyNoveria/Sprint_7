@@ -8,7 +8,7 @@ public class CourierClient {
     private static final String BASE_URI = "http://qa-scooter.praktikum-services.ru/";
     private static final String CREATE_PATH = "api/v1/courier";
     private static final String LOGIN_PATH = "api/v1/courier/login";
-    private static final String DELETE_PATH = "api/v1/courier/%s";
+    private static final String DELETE_PATH = "api/v1/courier/";
 
     public CourierClient(){
         RestAssured.baseURI = BASE_URI;
@@ -33,6 +33,8 @@ public class CourierClient {
 
     @Step("Delete courier")
     public void delete(int id){
-        given().header("Content-type","application/json").delete(DELETE_PATH + id);
+        given()
+                .header("Content-type","application/json")
+                .delete(DELETE_PATH + id);
     }
 }
