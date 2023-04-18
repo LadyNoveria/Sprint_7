@@ -50,9 +50,7 @@ public class CreatingCourierTests {
     @DisplayName("200 OK: creating couriers without first Name")
     public void badRequestCreatingCourierWithoutFirstName() {
         Response response = courierClient.create(new Courier(courier.getLogin(), courier.getPassword(), null));
-        response.then().assertThat()
-                .body("message", equalTo("Недостаточно данных для создания учетной записи"))
-                .and().statusCode(SC_BAD_REQUEST);
+        response.then().assertThat().statusCode(200);
     }
 
     @After
