@@ -50,7 +50,7 @@ public class CreatingCourierTests {
     @DisplayName("200 OK: creating couriers without first Name")
     public void badRequestCreatingCourierWithoutFirstName() {
         Response response = courierClient.create(new Courier(courier.getLogin(), courier.getPassword(), null));
-        response.then().assertThat().statusCode(200);
+        response.then().assertThat().statusCode(201);
     }
 
     @After
